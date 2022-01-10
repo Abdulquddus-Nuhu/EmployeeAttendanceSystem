@@ -17,7 +17,35 @@ namespace EAS.Controllers
         {
             return View(await dbContext.Employees.ToListAsync());
         }
-
+        public async Task<IActionResult> Edit(int? id)
+        {
+            var employeeToUpdate = await dbContext.Employees.FirstOrDefaultAsync(s => s.Id == id);
+            if (await TryUpdateModelAsync<Employee>( employeeToUpdate,"", e => e.Name, e => e.Gender))
+            {
+                try
+                {
+                    await dbContext.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException /* ex */)
+                {
+                    
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
+                }
+            }
+            return View(employeeToUpdate);
+        }
+        public async Task<IActionResult> Delete()
+        {
+            return View(await dbContext.Employees.ToListAsync());
+        }
+        public IActionResult Create()
+        {
+            return View();
+        }
+        
         [HttpPost]
         public async Task<IActionResult> Create(Employee employee)
         {
@@ -29,29 +57,5 @@ namespace EAS.Controllers
             }
             return View();
         }
-
-        public async Task<IActionResult> Edit()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> Edit(int? id)
-        {
-            var employeeToUpdate = await dbContext.Employees.FindAsync(id);
-
-            if (employeeToUpdate == null)
-            {
-                return NotFound();
-            }
-            return View(employeeToUpdate);
-        }
-
-      
-      
-        public async Task<IActionResult> Delete(int? id)
-        {
-            return View();
-        }
-        
     }
 }
