@@ -17,35 +17,13 @@ namespace EAS.Controllers
         {
             return View(await dbContext.Employees.ToListAsync());
         }
-        public async Task<IActionResult> Edit(int? id)
-        {
-            var employeeToUpdate = await dbContext.Employees.FirstOrDefaultAsync(s => s.Id == id);
-            if (await TryUpdateModelAsync<Employee>( employeeToUpdate,"", e => e.Name, e => e.Gender))
-            {
-                try
-                {
-                    await dbContext.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateException /* ex */)
-                {
-                    
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                        "Try again, and if the problem persists, " +
-                        "see your system administrator.");
-                }
-            }
-            return View(employeeToUpdate);
-        }
-        public async Task<IActionResult> Delete()
-        {
-            return View(await dbContext.Employees.ToListAsync());
-        }
+
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Create(Employee employee)
         {
@@ -57,5 +35,50 @@ namespace EAS.Controllers
             }
             return View();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == 0 || id == null)
+            {
+                return NotFound();
+            }
+
+            var employee = dbContext.Employees.Find(id);
+            if (employee == null)
+                return NotFound();
+
+            return View(employee);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Employee employee)
+        {
+            if (ModelState.IsValid)
+            {
+                dbContext.Employees.Update(employee);
+                await dbContext.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            return View(employee);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == 0 || id == null)
+            {
+                return NotFound();
+            }
+
+            var employee = dbContext.Employees.Find(id);
+            if (employee == null)
+                return NotFound();
+
+            return View(employee);
+        }
+     
+        
+       
     }
 }
