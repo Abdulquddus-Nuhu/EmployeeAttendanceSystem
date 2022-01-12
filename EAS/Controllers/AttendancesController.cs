@@ -93,7 +93,7 @@ namespace EAS.Controllers
             {
                 return NotFound();
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id", attendance.EmployeeId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Name", attendance.EmployeeId);
             return View(attendance);
         }
 
@@ -102,17 +102,14 @@ namespace EAS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,Mode,EmployeeId")] Attendance attendance)
+        //[Bind("Id,Date,Mode,EmployeeId")]
+        public async Task<IActionResult> Edit(int id, Attendance attendance)
         {
-
             if (id != attendance.Id)
             {
                 return NotFound();
             }
 
-            var attendanceListToday = _context.Attendances.Where(e => e.Date.Date == DateTime.Today);
-            if (attendanceListToday.Any(e => e.EmployeeId == attendance.EmployeeId))
-                return RedirectToAction(nameof(ErrorDuplicateAttendance));
 
             if (ModelState.IsValid)
             {
@@ -134,7 +131,7 @@ namespace EAS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id", attendance.EmployeeId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Name", attendance.EmployeeId);
             return View(attendance);
         }
 
