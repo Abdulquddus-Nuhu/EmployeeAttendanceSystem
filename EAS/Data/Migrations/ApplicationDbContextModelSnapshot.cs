@@ -43,7 +43,7 @@ namespace EAS.Data.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("Attendances");
+                    b.ToTable("Attendances", (string)null);
                 });
 
             modelBuilder.Entity("EAS.Data.Entities.Employee", b =>
@@ -77,7 +77,7 @@ namespace EAS.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

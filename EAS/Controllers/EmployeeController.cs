@@ -29,6 +29,12 @@ namespace EAS.Controllers
         {
             if (ModelState.IsValid)
             {
+                var employeeExist = dbContext.Employees.FirstOrDefault(x => x.StaffId == employee.StaffId);
+                if (employeeExist != null)
+                {
+                    return RedirectToAction(nameof(ErrorDuplicateEmployee)); 
+                }
+
                 dbContext.Employees.Add(employee);
                 await dbContext.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -77,8 +83,12 @@ namespace EAS.Controllers
 
             return View(employee);
         }
-     
+
+        public async Task<IActionResult> ErrorDuplicateEmployee()
+        {
+            return View();
+        }
         
-       
+
     }
 }
